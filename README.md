@@ -1,35 +1,35 @@
-# NENO XMD BOT (V2)
+# TSUNADE XMD BOT (Test 1)
 <p align="center">
-<a href="https://github.com/Nimeshkamihiran"><img title="Author" src="https://files.catbox.moe/z5lhou.jpg"></a>
+<a href="https://github.com/mikaelkabore750-tech"><img title="Author" src="https://files.catbox.moe/lekd2l.jpg"></a>
 
 <p align="center">
-<a href="https://github.com/Nimeshkamihiran/followers"><img title="Followers" src="https://img.shields.io/github/followers/Nimeshkamihiran?color=blue&style=flat-square"></a>
-<a href="https://github.com/Nimeshkamihiran/neno-xmd-bot/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/Nimeshkamihiran/neno-xmd-bot?color=blue&style=flat-square"></a>
-<a href="https://github.com/Nimeshkamihiran/neno-xmd-bot/network/members"><img title="Forks" src="https://img.shields.io/github/forks/Nimeshkamihiran/neno-xmd-bot?color=blue&style=flat-square"></a>
-<a href="https://github.com/Nimeshkamihiran/neno-xmd-bot/"><img title="Size" src="https://img.shields.io/github/repo-size/Nimeshkamihiran/neno-xmd-bot?style=flat-square&color=green"></a>
-<a href="https://github.com/Nimeshkamihiran/neno-xmd-bot/graphs/commit-activity"><img height="20" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg"></a>
+<a href="https://github.com/mikaelkabore750-tech/followers"><img title="Followers" src="https://img.shields.io/github/followers/Mikael-Followers?color=blue&style=flat-square"></a>
+<a href="https://github.com/mikaelkabore750-tech/TSUNADE-XMD-test-1/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/mikaelkabore750-tech/TSUNADE-XMD-test-1?color=blue&style=flat-square"></a>
+<a href="https://github.com/mikaelkabore750-tech/TSUNADE-XMD-test-1/network/members"><img title="Forks" src="https://img.shields.io/github/forks/mikaelkabore750-tech/TSUNADE-XMD-test-1?color=blue&style=flat-square"></a>
+<a href="https://github.com/mikaelkabore750-tech/TSUNADE-XMD-test-1/"><img title="Size" src="https://img.shields.io/github/repo-size/mikaelkabore750-tech/TSUNADE-XMD-test-1?style=flat-square&color=green"></a>
+<a href="https://github.com/mikaelkabore750-tech/TSUNADE-XMD-test-1/graphs/commit-activity"><img height="20" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg"></a>
 </p>
 
 ---
 
 <p align="center">
-<a aria-label="Join our chats" href="https://chat.whatsapp.com/Ekoe6EykUJf0KfQShsBfoN?mode=ac_t" target="_blank">
+<a aria-label="Join our chats" href="https://chat.whatsapp.com/DbnJGPwfyseF8ejtYvnLum" target="_blank">
 <img alt="whatsapp" src="https://img.shields.io/badge/Join Group-25D366?style=for-the-badge&logo=telegram&logoColor=white" />
 </a>
 </p>
 
 ---
 
-<p align="center"><img src="https://profile-counter.glitch.me/{NENO-XMD}/count.svg" alt="Nimeshkamihiran :: Visitor's Count" /></p>
+<p align="center"><img src="https://profile-counter.glitch.me/{TSUNADE-XMD}/count.svg" alt="Mikael-spnrs :: Visitor's Count" /></p>
 
 <p align="center">
-Meet <b>NENO XMD BOT</b>, your all-in-one WhatsApp AI Buddy!  
+Meet <b>TSUNADE XMD BOT</b>, your all-in-one WhatsApp AI Buddy!  
 Super fast, full-featured, and designed for fun + productivity.  
 Bring automation, entertainment, and unique features to your chats!
-               𝗕𝗬 𝗡𝗜𝗠𝗘𝗦𝗛𝗞𝗔 𝗠𝗜𝗛𝗜𝗥𝗔𝗡 / 𝗦𝗛𝗔𝗗𝗢𝗪 𝗙𝗫 / 𝗕𝗟𝗔𝗖𝗞𝗬 ✨🤖
+               𝗕𝗬 𝗠𝗜𝗞𝗔𝗘𝗟 𝘀𝗽𝗻𝗿𝘀 𝗧𝗘𝗔𝗠
 </p>
 
-<a href="https://github.com/Nimeshkamihiran/neno-xmd-bot/fork"><img title="NENO-XMD" src="https://img.shields.io/badge/FORK-NENO XMD-h?color=blue&style=for-the-badge&logo=stackshare"></a>
+<a href="https://github.com/mikaelkabore750-tech/TSUNADE-XMD-test-1/fork"><img title="TSUNADE-XMD" src="https://img.shields.io/badge/FORK-TSUNADE XMD-h?color=blue&style=for-the-badge&logo=stackshare"></a>
 
 ---
 
@@ -39,7 +39,7 @@ Bring automation, entertainment, and unique features to your chats!
   
 
 
-2. **Star ⭐ this repository** & Click [FORK](https://github.com/Nimeshkamihiran/neno-xmd-bot/fork)
+2. **Star ⭐ this repository** & Click [FORK](https://github.com/mikaelkabore750-tech/TSUNADE-XMD-test-1/fork)
 
 ---
 
@@ -49,7 +49,7 @@ Bring automation, entertainment, and unique features to your chats!
 ---
 
 ### 4. Deploy on Replit
-<a href='https://repl.it/github/Nimeshkamihiran/neno-xmd-bot' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-REPLIT-orange?style=for-the-badge&logo=replit&logoColor=white'/></a>
+<a href='https://repl.it/github/mikaelkabore750-tech/TSUNADE-XMD-test-1' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/-REPLIT-orange?style=for-the-badge&logo=replit&logoColor=white'/></a>
 
 ---
 
@@ -72,10 +72,10 @@ Bring automation, entertainment, and unique features to your chats!
 <a href='https://railway.app/new' target="_blank"><img alt='DEPLOY' src='https://img.shields.io/badge/RAILWAY-h?color=black&style=for-the-badge&logo=railway'/></a>
 
 <p align="center">
-<a href="https://github.com/Nimeshkamihiran"><img title="Author" src="https://files.catbox.moe/c1urvj.jpg"></a>
+<a href="https://github.com/mikaelkabore750-tech/TSUNADE-XMD-test-1"><img title="Author" src="https://files.catbox.moe/0zv4y4.jpg"></a>
 
 ### 9.DEPLOY WORKFLOW
-<b><strong><summary align="center" style="color: Yello;">Deploy NENO XMD On Workflow</summary></strong></b>
+<b><strong><summary align="center" style="color: Yello;">Deploy TSUNADE XMD On Workflow</summary></strong></b>
 <p style="text-align: center; font-size: 1.2em;">
  
 <h8>Copy the workflow codes and then fork the repo edit config add session id then save and now click on repo action tag then click on start new workflow then paste workflow codes rename main.yml to deploy.yml and save the file</h8>
@@ -120,32 +120,16 @@ jobs:
 `````
 
 <p align="center">
-  <img src="https://files.catbox.moe/0mf3hg.webp" alt="Owner" width="250" />
+  <img src="https://files.catbox.moe/0zv4y4.jpg" alt="Owner" width="250" />
 </p>
 
-# 👑 Bot Owner ✨
+# 💞 Bot Owner 🥷🏼
 
 <p align="center">
-  💫 Meet the mastermind behind Neno XMD WhatsApp Bot! 💫  
-  This bot is powered, maintained, and updated by **Nimeshka Mihiran**.  
+  🦠 Meet the mastermind behind TSUNADE XMD WhatsApp Bot! 🦠  
+  This bot is powered, maintained, and updated by **Milael spnrs**.  
   Every feature, command, and fun trick you enjoy is crafted with care!  
 </p>
-
-| Detail | Info |
-|--------|------|
-| Name | **Nimeshka Mihiran** ✨ |
-| Contact | 📞 +94 760771665 |
-| GitHub | 💻 [NimeshkaMihiran](https://github.com/Nimeshkamihiran) |
-| Role | 🛠 Owner & Developer |
-| Status | 🌟 Online & Active 🌟 |
-
 <p align="center">
-  🌟 Fun, Friendly & Always Upgrading 🌟  
-  <img src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" alt="Sparkle" width="80" />
-  <img src="https://media.giphy.com/media/3o7aCTfyhYawdOXcFW/giphy.gif" alt="Stars" width="80" />  
-  Made with ❤️ and lots of coffee ☕ by <b>Nimeshka Mihiran</b>
-</p>
-
-<p align="center">
-  ✨ Keep shining and exploring new features with Neno XMD! ✨
+  ❤️ Keep shining and exploring new features with TSUNADE XMD! 🌷
 </p>
