@@ -1,0 +1,50 @@
+{
+  "bot-name": "TSUNADE XMD",
+  "description": "BY MIKAEL SPONSOR",
+  "logo": "https://files.catbox.moe/0zv4y4.jpg",
+  "keywords": ["bot"],
+  "documentation-link": "https://mikael-temp-pair.onrender.com",
+  "owner-verification": "mikaelkabore733@gmail.com",
+  "env": {
+    "SESSION_ID": {
+      "description": "Put your session-id here.",
+      "value": "",
+      "required": true
+    },
+    "OWNER_NUM": {
+      "description": "Your WhatsApp number including country code (e.g., 226XXXXXXXX).",
+      "value": "",
+      "required": true
+    },
+    "PREFIX": {
+      "description": "Command prefix (default: .)",
+      "value": ".",
+      "required": false
+    },
+    "AUTO_READ_STATUS": {
+      "description": "Set to true to enable auto-read of WhatsApp statuses.",
+      "value": "false",
+      "required": false
+    },
+    "AUTO_REACT_STATUS": {
+      "description": "Set to true to enable auto-reaction to statuses.",
+      "value": "false",
+      "required": false
+    },
+    "AUTO_STATUS_LIKE": {
+      "description": "Set to true to enable auto-like for statuses (if supported).",
+      "value": "false",
+      "required": false
+    },
+    "AUTO_RECORDING": {
+      "description": "Set to true to show recording presence when typing.",
+      "value": "false",
+      "required": false
+    },
+    "Mode": {
+      "description": "Set bot mode: public / private / groups / inbox",
+      "value": "public",
+      "required": true
+    }
+  }
+}
