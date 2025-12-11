@@ -28,10 +28,10 @@ const qrcode = require('qrcode-terminal');
 const util = require('util');
 const { sms, downloadMediaMessage } = require('./lib/msg');
 const axios = require('axios');
-const prefix = config.PREFIX;
+const prefix = process.env.PREFIX || config.PREFIX || ".";
 const os = require('os');
 const moment = require('moment');
-const ownerNumber = config.OWNER_NUM;
+const ownerNumber = process.env.OWNER_NUM || config.OWNER_NUM || "22606527293";
 
 // Vérification et création de la session
 const sessionDir = __dirname + '/session';
@@ -45,7 +45,9 @@ if (!fs.existsSync(sessionDir)) {
 
 // Si creds.json n'existe pas mais SESSION_ID est défini
 if (!fs.existsSync(credsFile)) {
-    if (!config.SESSION_ID) {
+    const sessionId = process.env.SESSION_ID || config.SESSION_ID;
+    
+    if (!sessionId) {
         console.log('❌ Please add your session to SESSION_ID env !!');
         process.exit(1);
     }
@@ -56,14 +58,14 @@ if (!fs.existsSync(credsFile)) {
         // Essayer de décoder le base64
         let sessionData;
         try {
-            const decoded = Buffer.from(config.SESSION_ID, 'base64').toString('utf8');
+            const decoded = Buffer.from(sessionId, 'base64').toString('utf8');
             // Valider que c'est du JSON
             JSON.parse(decoded);
             sessionData = decoded;
             console.log('✅ Session decoded from base64');
         } catch (base64Error) {
             // Si ce n'est pas du base64, utiliser directement
-            sessionData = config.SESSION_ID;
+            sessionData = sessionId;
             console.log('ℹ️ Using SESSION_ID as plain text');
         }
         
@@ -103,8 +105,12 @@ async function connectToWA() {
 
         if (connection === 'close') {
             if (lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut) {
-                console.log('🔄 Reconnecting...');
-                connectToWA();
+                console.log('🔄 Reconnecting in 5 seconds...');
+                setTimeout(() => {
+                    connectToWA();
+                }, 5000);
+            } else {
+                console.log('❌ Logged out, please restart bot');
             }
         } else if (connection === 'open') {
             console.log('✅ Connected to WhatsApp');
@@ -113,17 +119,19 @@ async function connectToWA() {
             const path = require('path');
             const pluginFiles = fs.readdirSync('./plugins/').filter(file => path.extname(file) === '.js');
             
+            const loadedPlugins = [];
             pluginFiles.forEach((file) => {
                 try {
-                    require('./plugins/' + file);
+                    const plugin = require('./plugins/' + file);
+                    loadedPlugins.push({ name: file, module: plugin });
                     console.log(`✅ Loaded plugin: ${file}`);
                 } catch (error) {
                     console.log(`❌ Failed to load plugin ${file}:`, error.message);
                 }
             });
-
-            console.log('🚀 TSUNADE X MD started successfully');
-            console.log('📦 All plugins installed');
+            
+            console.log(`🚀 TSUNADE X MD started successfully`);
+            console.log(`📦 ${loadedPlugins.length}/${pluginFiles.length} plugins loaded`);
 
             // Message de bienvenue
             let caption = `
@@ -276,13 +284,38 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
             sock.sendMessage(from, { text: teks }, { quoted: msg });
         };
 
-        // Fonction d'envoi de fichier par URL
+        // Fonction d'envoi de fichier par URL - VERSION CORRIGÉE
         sock.sendFileUrl = async (jid, url, caption, quoted, options = {}) => {
             let mimetype = '';
-            let response = await axios.head(url);
-            mimetype = response.headers['content-type'];
+            
+            try {
+                // Utiliser axios avec timeout et headers
+                const response = await axios.head(url, {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                        'Accept': '*/*'
+                    },
+                    timeout: 10000,
+                    validateStatus: function (status) {
+                        return status < 500; // Accepte les codes 4xx
+                    }
+                });
+                mimetype = response.headers['content-type'] || '';
+            } catch (error) {
+                console.log('⚠️ Failed to get content-type:', error.message);
+                // Déduire le type par extension
+                if (url.includes('.jpg') || url.includes('.jpeg') || url.includes('.png')) {
+                    mimetype = 'image/jpeg';
+                } else if (url.includes('.mp4') || url.includes('.avi')) {
+                    mimetype = 'video/mp4';
+                } else if (url.includes('.pdf')) {
+                    mimetype = 'application/pdf';
+                } else {
+                    mimetype = 'application/octet-stream';
+                }
+            }
 
-            if (mimetype.split('/')[1] === 'gif') {
+            if (mimetype.includes('gif')) {
                 return sock.sendMessage(jid, {
                     video: await getBuffer(url),
                     caption: caption,
@@ -291,7 +324,6 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
                 }, { quoted: quoted, ...options });
             }
 
-            let ext = mimetype.split('/')[0] + '/';
             if (mimetype === 'application/pdf') {
                 return sock.sendMessage(jid, {
                     document: await getBuffer(url),
@@ -301,7 +333,7 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
                 }, { quoted: quoted, ...options });
             }
 
-            if (mimetype.split('/')[0] === 'image') {
+            if (mimetype.includes('image')) {
                 return sock.sendMessage(jid, {
                     image: await getBuffer(url),
                     caption: caption,
@@ -309,7 +341,7 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
                 }, { quoted: quoted, ...options });
             }
 
-            if (mimetype.split('/')[0] === 'video') {
+            if (mimetype.includes('video')) {
                 return sock.sendMessage(jid, {
                     video: await getBuffer(url),
                     caption: caption,
@@ -318,7 +350,7 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
                 }, { quoted: quoted, ...options });
             }
 
-            if (mimetype.split('/')[0] === 'audio') {
+            if (mimetype.includes('audio')) {
                 return sock.sendMessage(jid, {
                     audio: await getBuffer(url),
                     caption: caption,
@@ -326,6 +358,14 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
                     ...options
                 }, { quoted: quoted, ...options });
             }
+            
+            // Fallback: envoyer comme document
+            return sock.sendMessage(jid, {
+                document: await getBuffer(url),
+                mimetype: mimetype,
+                caption: caption,
+                ...options
+            }, { quoted: quoted, ...options });
         };
 
         // Anti-delete
@@ -535,5 +575,5 @@ process.on('uncaughtException', (error) => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-    console.error('⚠️ Unhandled Rejection at:',promise, 'reason:', reason);
+    console.error('⚠️ Unhandled Rejection at:', promise, 'reason:', reason);
 });
