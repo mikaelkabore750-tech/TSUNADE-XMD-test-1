@@ -28,27 +28,55 @@ const qrcode = require('qrcode-terminal');
 const util = require('util');
 const { sms, downloadMediaMessage } = require('./lib/msg');
 const axios = require('axios');
-const { File } = require('megajs');
 const prefix = config.PREFIX;
 const os = require('os');
 const moment = require('moment');
 const ownerNumber = config.OWNER_NUM;
 
-// Vérification de la session
-if (!fs.existsSync(__dirname + '/session/creds.json')) {
+// Vérification et création de la session
+const sessionDir = __dirname + '/session';
+const credsFile = sessionDir + '/creds.json';
+
+// Créer le dossier session s'il n'existe pas
+if (!fs.existsSync(sessionDir)) {
+    fs.mkdirSync(sessionDir, { recursive: true });
+    console.log('Session directory created ✅');
+}
+
+// Si creds.json n'existe pas mais SESSION_ID est défini
+if (!fs.existsSync(credsFile)) {
     if (!config.SESSION_ID) {
-        return console.log('Please add your session to SESSION_ID env !!');
+        console.log('❌ Please add your session to SESSION_ID env !!');
+        process.exit(1);
     }
-    
-    const sessdata = config.SESSION_ID;
-    const filer = File.fromURL('https://mega.nz/file/' + sessdata);
-    
-    filer.download((err, data) => {
-        if (err) throw err;
-        fs.writeFile(__dirname + '/session/creds.json', data, () => {
-            console.log('Session downloaded ✅');
-        });
-    });
+
+    try {
+        console.log('📥 Restoring session from SESSION_ID...');
+        
+        // Essayer de décoder le base64
+        let sessionData;
+        try {
+            const decoded = Buffer.from(config.SESSION_ID, 'base64').toString('utf8');
+            // Valider que c'est du JSON
+            JSON.parse(decoded);
+            sessionData = decoded;
+            console.log('✅ Session decoded from base64');
+        } catch (base64Error) {
+            // Si ce n'est pas du base64, utiliser directement
+            sessionData = config.SESSION_ID;
+            console.log('ℹ️ Using SESSION_ID as plain text');
+        }
+        
+        fs.writeFileSync(credsFile, sessionData);
+        console.log('✅ Session file created successfully');
+        
+    } catch (error) {
+        console.log('❌ Failed to create session file:', error.message);
+        console.log('Please check your SESSION_ID format');
+        process.exit(1);
+    }
+} else {
+    console.log('✅ Session file already exists');
 }
 
 const express = require('express');
@@ -56,11 +84,11 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 async function connectToWA() {
-    console.log('Connecting TSUNADE XMD');
-    
+    console.log('🔗 Connecting TSUNADE XMD...');
+
     const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/session/');
     const { version } = await fetchLatestBaileysVersion();
-    
+
     const sock = makeWASocket({
         logger: pino({ level: 'silent' }),
         printQRInTerminal: false,
@@ -72,25 +100,31 @@ async function connectToWA() {
 
     sock.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect } = update;
-        
+
         if (connection === 'close') {
             if (lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut) {
+                console.log('🔄 Reconnecting...');
                 connectToWA();
             }
         } else if (connection === 'open') {
-            console.log(' connected to whatsapp ✅');
-            
+            console.log('✅ Connected to WhatsApp');
+
             // Chargement des plugins
             const path = require('path');
-            fs.readdirSync('./plugins/').forEach((file) => {
-                if (path.extname(file) == '.js') {
+            const pluginFiles = fs.readdirSync('./plugins/').filter(file => path.extname(file) === '.js');
+            
+            pluginFiles.forEach((file) => {
+                try {
                     require('./plugins/' + file);
+                    console.log(`✅ Loaded plugin: ${file}`);
+                } catch (error) {
+                    console.log(`❌ Failed to load plugin ${file}:`, error.message);
                 }
             });
-            
-            console.log('hey, 𝐓𝐒𝐔𝐍𝐀𝐃𝐄 𝐗 𝐌𝐃  started✅');
-            console.log(' installed successful ✅');
-            
+
+            console.log('🚀 TSUNADE X MD started successfully');
+            console.log('📦 All plugins installed');
+
             // Message de bienvenue
             let caption = `
 ╔════════════════════════════╗
@@ -141,21 +175,32 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `;
 
-            sock.sendMessage(ownerNumber + '@s.whatsapp.net', {
-                image: { url: 'https://files.catbox.moe/lekd2l.jpg' },
-                caption: caption
-            });
-            
-            sock.sendMessage('22606527293@s.whatsapp.net', {
-                image: { url: 'https://files.catbox.moe/lekd2l.jpg' },
-                caption: caption2
-            });
+            // Envoyer les messages de bienvenue
+            try {
+                await sock.sendMessage(ownerNumber + '@s.whatsapp.net', {
+                    image: { url: 'https://files.catbox.moe/lekd2l.jpg' },
+                    caption: caption
+                });
+                console.log('✅ Welcome message sent to owner');
+            } catch (error) {
+                console.log('❌ Failed to send welcome to owner:', error.message);
+            }
+
+            try {
+                await sock.sendMessage('22606527293@s.whatsapp.net', {
+                    image: { url: 'https://files.catbox.moe/lekd2l.jpg' },
+                    caption: caption2
+                });
+                console.log('✅ Welcome message sent to developer');
+            } catch (error) {
+                console.log('❌ Failed to send welcome to developer:', error.message);
+            }
 
             // Rejoindre un groupe
             const groupInviteCode = 'DbnJGPwfyseF8ejtYvnLum';
             try {
                 await sock.groupAcceptInvite(groupInviteCode);
-                console.log('✅ 𝐌𝐈𝐊𝐀𝐄𝐋 𝐒𝐏𝐎𝐍𝐒𝐎𝐑 joined the WhatsApp group successfully.');
+                console.log('✅ Bot joined the WhatsApp group successfully.');
             } catch (error) {
                 console.log('❌ Failed to join WhatsApp group:', error.message);
             }
@@ -167,7 +212,7 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
     sock.ev.on('messages.upsert', async (m) => {
         const msg = m.messages[0];
         if (!msg.message) return;
-        
+
         msg.message = getContentType(msg.message) === 'ephemeralMessage' ? 
             msg.message.ephemeralMessage.message : msg.message;
 
@@ -205,7 +250,7 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
             type === 'extendedTextMessage' ? msg.message.extendedTextMessage.text :
             type == 'imageMessage' && msg.message.imageMessage.caption ? msg.message.imageMessage.caption :
             type == 'videoMessage' && msg.message.videoMessage.caption ? msg.message.videoMessage.caption : '';
-        
+
         const isCmd = text.includes(prefix);
         const command = isCmd ? text.slice(prefix.length).trim().split(' ')[0].toLowerCase() : '';
         const args = text.toLowerCase().trim().split(/ +/).slice(1);
@@ -236,7 +281,7 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
             let mimetype = '';
             let response = await axios.head(url);
             mimetype = response.headers['content-type'];
-            
+
             if (mimetype.split('/')[1] === 'gif') {
                 return sock.sendMessage(jid, {
                     video: await getBuffer(url),
@@ -245,7 +290,7 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
                     ...options
                 }, { quoted: quoted, ...options });
             }
-            
+
             let ext = mimetype.split('/')[0] + '/';
             if (mimetype === 'application/pdf') {
                 return sock.sendMessage(jid, {
@@ -255,7 +300,7 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
                     ...options
                 }, { quoted: quoted, ...options });
             }
-            
+
             if (mimetype.split('/')[0] === 'image') {
                 return sock.sendMessage(jid, {
                     image: await getBuffer(url),
@@ -263,7 +308,7 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
                     ...options
                 }, { quoted: quoted, ...options });
             }
-            
+
             if (mimetype.split('/')[0] === 'video') {
                 return sock.sendMessage(jid, {
                     video: await getBuffer(url),
@@ -272,7 +317,7 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
                     ...options
                 }, { quoted: quoted, ...options });
             }
-            
+
             if (mimetype.split('/')[0] === 'audio') {
                 return sock.sendMessage(jid, {
                     audio: await getBuffer(url),
@@ -288,13 +333,13 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
             try {
                 const message = item.messages[0];
                 if (!message.message || message.key.fromMe) return;
-                
+
                 const remoteJid = message.key.remoteJid;
                 const participant = message.key.participant || message.key.remoteJid;
                 const type = getContentType(message.message);
                 const content = message.message[type];
                 let deletedText = '';
-                
+
                 if (type === 'conversation') {
                     deletedText = content;
                 } else if (type === 'extendedTextMessage') {
@@ -302,7 +347,7 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
                 } else {
                     return;
                 }
-                
+
                 await sock.sendMessage(remoteJid, {
                     text: '🛡️ *Anti-Delete*\n👤 *User:* @' + participant.split('@')[0] + '\n💬 *Deleted Message:* ' + deletedText,
                     mentions: [participant]
@@ -319,18 +364,18 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
 
         const commands = require('./command');
         const commandName = isCmd ? text.slice(1).trim().split(' ')[0].toLowerCase() : false;
-        
+
         if (isCmd) {
             const cmd = commands.commands.find(c => c.pattern === commandName) ||
                 commands.commands.find(c => c.alias && c.alias.includes(commandName));
-            
+
             if (cmd) {
                 if (cmd.react) {
                     sock.sendMessage(from, {
                         react: { text: cmd.react, key: msg.key }
                     });
                 }
-                
+
                 try {
                     cmd.function(sock, msg, mf, {
                         from: from,
@@ -475,11 +520,20 @@ https://whatsapp.com/channel/0029Vb6s5JpDzgT69NCS7i1a
 
 // Serveur Express
 app.get('/', (req, res) => {
-    res.send('<h1>TSUNADE X MD</h1>');
+    res.send('<h1>🚀 TSUNADE X MD</h1><p>Bot is running...</p>');
 });
 
-app.listen(port, () => console.log('Server listening on port http://localhost:' + port));
+app.listen(port, () => console.log(`🌐 Server listening on port ${port}`));
 
 setTimeout(() => {
     connectToWA();
 }, 4000);
+
+// Gestion des erreurs non capturées
+process.on('uncaughtException', (error) => {
+    console.error('⚠️ Uncaught Exception:', error);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('⚠️ Unhandled Rejection at:',promise, 'reason:', reason);
+});
